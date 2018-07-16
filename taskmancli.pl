@@ -5,7 +5,7 @@ use Getopt::Std;
 use Copress::Zlib;
 
 my %opts;
-getopts('hval'. \%opts);
+getopts('hval', \%opts);
 
 my $help      = $opts{'h'};
 my $verbose   = $opts{'v'};
@@ -18,3 +18,5 @@ sub syntax{
   print $sysntax;
   exit;
 }
+
+print ""$help $verbose $addTasks";
