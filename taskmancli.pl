@@ -2,7 +2,6 @@
 
 use strict;
 use Getopt::Std;
-use Copress::Zlib;
 
 my %opts;
 getopts('hval', \%opts);
