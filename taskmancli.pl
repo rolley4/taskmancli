@@ -10,12 +10,12 @@ my $help      = $opts{'h'};
 my $verbose   = $opts{'v'};
 my $addTasks  = $opts{'a'};
 
-sub syntax{
+sub syntax {
   # Disaply Syntax and Exit
   #TODO
-  my $sysntax = "Usage $0 something"
-  print $sysntax;
+  my $syntax = "Usage $0 something";
+  print $syntax;
   exit;
 }
 
-print ""$help $verbose $addTasks";
+print "$help $verbose $addTasks";
