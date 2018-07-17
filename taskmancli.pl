@@ -4,6 +4,7 @@ use Data::Dumper;
 use strict;
 use LWP;
 use Getopt::Std;
+use Term::ANSIColor qw( colored );
 
 my %opts;
 getopts('hva:dl', \%opts);
@@ -29,12 +30,21 @@ if ($addTasks) {
     or die "Could not open file '$filename' $!";
 
   print $fh "$addTasks";
+  close $fh;
 }
 
 if ($listTasks) {
   my @files = <TASKS/*.tsk>;
 
+  print colored('|---ID---| |-Start Date and Time--| |-Task Name-->', 'blue on_green'), "\n";
   foreach my $task (@files) {
-    print $task . "\n";
+    my $taskEpoch;
+    ($taskEpoch) = $task =~ /\/(.*)\./;
+
+    open(my $fh, '<:encoding(UTF-8)', $task)
+      or die "Could not open file '$task' $!";
+
+    my @taskContent = <$fh>;
+    print $taskEpoch . " " . localtime($taskEpoch) . " " . $taskContent[0] . "\n";
   }
 }
