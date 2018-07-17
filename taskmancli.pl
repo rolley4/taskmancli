@@ -36,7 +36,7 @@ if ($addTasks) {
 if ($listTasks) {
   my @files = <TASKS/*.tsk>;
 
-  print colored('|---ID---| |-Start Date and Time--| |-Task Name-->', 'green on_blue'), "\n";
+  print colored('|---ID---| |-Start Date and Time--| |-Task Name-->', 'white on_blue'), "\n";
   foreach my $task (@files) {
     my $taskEpoch;
     ($taskEpoch) = $task =~ /\/(.*)\./;
