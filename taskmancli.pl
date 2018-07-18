@@ -5,6 +5,7 @@ use strict;
 use LWP;
 use Getopt::Std;
 use Term::ANSIColor qw( colored );
+use Date::Parse;
 
 my %opts;
 getopts('hvadle:D:', \%opts);
@@ -60,7 +61,9 @@ if ($listTasks) {
     my ($taskEpoch) = $task =~ /TASKS\/(.*)\./;
     my $taskContent;
     my $taskItemStart;
+    my $taskItemStartEpoch;
     my $taskItemEnd;
+    my $taskItemEndEpoch;
     my @taskNotes;
 
     open(my $fh, '<', $task)
@@ -75,10 +78,12 @@ if ($listTasks) {
         chomp $row;
         $row =~ s/^TASKSTART\://;
         $taskItemStart = $row;
+        $taskItemStartEpoch = str2time($taskItemStart);
       } elsif ($row =~ /^TASKEND\:.*/) {
         chomp $row;
         $row =~ s/^TASKEND\://;
         $taskItemEnd = $row;
+        $taskItemEndEpoch = str2time($taskItemEnd);
       } elsif ($row =~ /^NOTES\:.*/) {
         chomp $row;
         $row =~ s/^NOTES\://;
@@ -89,16 +94,18 @@ if ($listTasks) {
       }
     }
 
-    my $listColor;
-    if ($colorToggle) {
-      $colorToggle = 0;
-      $listColor = 'green';
+    my $taskTimeDiff = $taskItemEndEpoch - $taskItemStartEpoch;
+    my $alarmColor;
+    if ($taskTimeDiff > 172800) {
+      $alarmColor = 'white on_green';
+    } elsif ($taskTimeDiff > 86400) {
+      $alarmColor = 'white on_red';
     } else {
-      $colorToggle = 1;
-      $listColor = 'blue';
+      $alarmColor = 'blink white on_red';
     }
 
-    print colored($taskEpoch, $listColor) . "| |" . colored($taskItemStart, $listColor) . "| |" . colored($taskItemEnd, 'red') . "| |" . colored($taskContent, $listColor) . "\n";
+
+    print colored($taskEpoch, 'blue') . "| |" . colored($taskItemStart, 'green') . "| |" . colored($taskItemEnd, $alarmColor) . "| |" . colored($taskContent, 'yellow on_blue') . "\n";
 
     if ($details) {
       foreach (@taskNotes) {
