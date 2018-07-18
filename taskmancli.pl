@@ -1,5 +1,10 @@
 #!/usr/bin/perl
 
+# https://github.com/rolley4/taskmancli
+# Beta Version taskmancli
+# 2018 Rolley Bateman
+# rolley.bateman@gmail.chom
+
 use Data::Dumper;
 use strict;
 use LWP;
