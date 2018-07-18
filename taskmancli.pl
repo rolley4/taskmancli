@@ -31,7 +31,7 @@ if ($addTasks) {
     or die "Could not open file '$filename' $!";
   print $fh "TASK:TASK TITLE\n" . "TASKSTART:" . (localtime($taskHash)) . "\n" . "TASKEND:" . (localtime($taskHash+864000)) . "\n" . "NOTES:";
   close $fh;
-  system('pico', $filename);
+  system('nano', $filename);
 }
 
 # LIST TASKS
