@@ -101,11 +101,11 @@ if ($listTasks) {
     } elsif ($taskTimeDiff > 86400) {
       $alarmColor = 'white on_red';
     } else {
-      $alarmColor = 'blink white on_red';
+      $alarmColor =  'yellow on_red';
     }
 
 
-    print colored($taskEpoch, 'blue') . "| |" . colored($taskItemStart, 'green') . "| |" . colored($taskItemEnd, $alarmColor) . "| |" . colored($taskContent, 'yellow on_blue') . "\n";
+    print colored($taskEpoch, 'blue') . "| |" . colored($taskItemStart, 'green') . "| |" . colored($taskItemEnd, $alarmColor) . "| |" . colored($taskContent, 'white on_blue') . "\n";
 
     if ($details) {
       foreach (@taskNotes) {
