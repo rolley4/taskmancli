@@ -30,7 +30,7 @@ if ($addTasks) {
   my $filename = 'TASKS/' . $taskHash .  '.tsk';
   open(my $fh, '>', $filename)
     or die "Could not open file '$filename' $!";
-  print $fh "TASK:TASK TITLE\n" . "TASKSTART:" . (localtime($taskHash)) . "\n" . "TASKEND:" . (localtime($taskHash+864000)) . "\n" . "NOTES:";
+  print $fh "TASK:TASK TITLE\n" . "TASKSTART:" . (localtime($taskHash)) . "\n" . "TASKEND:" . (localtime($taskHash+86400)) . "\n" . "NOTES:";
   close $fh;
   system('nano', $filename);
 }
