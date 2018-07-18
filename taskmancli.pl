@@ -7,13 +7,14 @@ use Getopt::Std;
 use Term::ANSIColor qw( colored );
 
 my %opts;
-getopts('hvadl', \%opts);
+getopts('hvadle:', \%opts);
 
 my $help        = $opts{'h'};
 my $verbose     = $opts{'v'};
 my $addTasks    = $opts{'a'};
 my $details     = $opts{'d'};
 my $listTasks   = $opts{'l'};
+my $editTasks   = $opts{'e'};
 
 sub syntax {
   # Disaply Syntax and Exit
@@ -34,6 +35,12 @@ if ($addTasks) {
   system('nano', $filename);
 }
 
+# ADD NEW TASKS
+if ($editTasks) {
+  my $filename = 'TASKS/' . $editTasks .  '.tsk';
+  system('nano', $filename);
+}
+
 # LIST TASKS
 if ($listTasks) {
   my @files = <TASKS/*.tsk>;
@@ -48,7 +55,7 @@ if ($listTasks) {
     my $taskItemEnd;
     my @taskNotes;
 
-    open(my $fh, '<:encoding(UTF-8)', $task)
+    open(my $fh, '<', $task)
       or die "Could not open file '$task' $!";
 
     while (my $row = <$fh>) {
