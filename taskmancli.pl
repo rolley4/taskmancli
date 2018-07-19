@@ -13,7 +13,7 @@ use Term::ANSIColor qw( colored );
 use Date::Parse;
 
 my %opts;
-getopts('hvadle:D:', \%opts);
+getopts('hvadle:D:c', \%opts);
 
 my $help        = $opts{'h'};
 my $verbose     = $opts{'v'};
@@ -22,6 +22,7 @@ my $details     = $opts{'d'};
 my $listTasks   = $opts{'l'};
 my $editTasks   = $opts{'e'};
 my $taskDir     = $opts{'D'};
+my $shComplete  = $opts{'c'};
 
 # -D should be an alias
 if ($taskDir) {
@@ -44,7 +45,7 @@ if ($addTasks) {
   my $filename = $taskDir . $taskHash .  '.tsk';
   open(my $fh, '>', $filename)
     or die "Could not open file '$filename' $!";
-  print $fh "TASK:TASK TITLE\n" . "TASKSTART:" . (localtime($taskHash)) . "\n" . "TASKEND:" . (localtime($taskHash+86400)) . "\n" . "NOTES:";
+  print $fh "ACTIVE:\n" . "TASK:TASK TITLE\n" . "TASKSTART:" . (localtime($taskHash)) . "\n" . "TASKEND:" . (localtime($taskHash+86400)) . "\n" . "NOTES:";
   close $fh;
   system('nano', $filename);
 }
@@ -60,7 +61,7 @@ if ($listTasks) {
   my @files = <$taskDir*.tsk>;
 
   my $colorToggle = 0;
-  print colored('|---ID----| |---Start Date and Time--| |--_-End Date and Time---| |--------Task----------->', 'white on_blue'), "\n";
+  print colored('   |---ID----| |---Start Date and Time--| |--_-End Date and Time---| |--------Task----------->', 'white on_blue'), "\n";
   #print colored('|---ID---| |-Start Date and Time--| |-Task Name-->', 'white on_blue'), "\n";
   foreach my $task (@files) {
     my ($taskEpoch) = $task =~ /TASKS\/(.*)\./;
@@ -70,12 +71,17 @@ if ($listTasks) {
     my $taskItemEnd;
     my $taskItemEndEpoch;
     my @taskNotes;
+    my $taskState;
 
     open(my $fh, '<', $task)
       or die "Could not open file '$task' $!";
 
     while (my $row = <$fh>) {
-      if ($row =~ /^TASK\:.*/) {
+      if ($row =~ /^ACTIVE:$/) {
+        $taskState = 'A';
+      } elsif ($row =~ /^COMPLETE:$/) {
+        $taskState = 'C';
+      } elsif ($row =~ /^TASK\:.*/) {
         chomp $row;
         $row =~ s/^TASK\://;
         $taskContent = $row;
@@ -109,12 +115,17 @@ if ($listTasks) {
       $alarmColor =  'yellow on_red';
     }
 
+    if (($shComplete) && ($taskState =~ 'C')) {
+      $alarmColor =  'green';
+    }
 
-    print colored($taskEpoch, 'blue') . "| |" . colored($taskItemStart, 'green') . "| |" . colored($taskItemEnd, $alarmColor) . "| |" . colored($taskContent, 'white on_blue') . "\n";
+    if (($taskState =~ 'A') || ($shComplete)) {
+      print $taskState . "| |" . colored($taskEpoch, 'blue') . "| |" . colored($taskItemStart, 'green') . "| |" . colored($taskItemEnd, $alarmColor) . "| |" . colored($taskContent, 'white on_blue') . "\n";
 
-    if ($details) {
-      foreach (@taskNotes) {
-        print "\t", colored($_, 'cyan') . "\n";
+      if ($details) {
+        foreach (@taskNotes) {
+          print "\t", colored($_, 'cyan') . "\n";
+        }
       }
     }
 
